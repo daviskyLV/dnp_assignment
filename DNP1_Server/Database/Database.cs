@@ -7,6 +7,7 @@ namespace DNP1_Server.Database;
 public class Database : IDatabase {
     private readonly string _dbUsers;
     private readonly string _dbPosts;
+    private readonly IDataAccess _dbAccess;
 
     private Dictionary<string, User> _cachedUsers; // key is username
     private Dictionary<long, Post> _cachedPosts; // key is id
@@ -14,42 +15,31 @@ public class Database : IDatabase {
     public Database(string dbUsers, string dbPosts) {
         _dbUsers = dbUsers;
         _dbPosts = dbPosts;
+        _dbAccess = new DataAccess();
 
         _cachedUsers = new Dictionary<string, User>();
         _cachedPosts = new Dictionary<long, Post>();
         
-        // creating database files if they dont exist
-        if (!File.Exists(_dbUsers))
-            File.WriteAllText(_dbUsers, "[]");
-        if (!File.Exists(_dbPosts))
-            File.WriteAllText(_dbPosts, "[]");
-        
         // loading data into cache
-        using (StreamReader r = new StreamReader(dbUsers)) {
-            string json = r.ReadToEnd();
-            var users = JsonSerializer.Deserialize<List<User>>(json);
-            foreach (var u in users) {
-                _cachedUsers.Add(u.GetUsername(), u);
-            }
+        var users = JsonSerializer.Deserialize<List<User>>(_dbAccess.LoadJsonData(dbUsers));
+        foreach (var u in users) {
+            _cachedUsers.Add(u.GetUsername(), u);
         }
         
-        using (StreamReader r = new StreamReader(dbPosts)) {
-            string json = r.ReadToEnd();
-            var posts = JsonSerializer.Deserialize<List<Post>>(json);
-            foreach (var p in posts) {
-                _cachedPosts.Add(p.Id, p);
-            }
+        var posts = JsonSerializer.Deserialize<List<Post>>(_dbAccess.LoadJsonData(dbPosts));
+        foreach (var p in posts) {
+            _cachedPosts.Add(p.Id, p);
         }
     }
 
     private void saveUsers() {
         var json = JsonSerializer.Serialize(_cachedUsers.Values);
-        File.WriteAllText(_dbUsers, json);
+        _dbAccess.SaveData(_dbUsers, json);
     }
     
     private void savePosts() {
         var json = JsonSerializer.Serialize(_cachedPosts.Values);
-        File.WriteAllText(_dbPosts, json);
+        _dbAccess.SaveData(_dbPosts, json);
     }
 
     public (CreateUserEnum, User?) CreateUser(string username, string password) {
