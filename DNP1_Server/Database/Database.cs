@@ -23,7 +23,7 @@ public class Database : IDatabase {
         // loading data into cache
         var users = JsonSerializer.Deserialize<List<User>>(_dbAccess.LoadJsonData(dbUsers));
         foreach (var u in users) {
-            _cachedUsers.Add(u.GetUsername(), u);
+            _cachedUsers.Add(u.Username, u);
         }
         
         var posts = JsonSerializer.Deserialize<List<Post>>(_dbAccess.LoadJsonData(dbPosts));
@@ -46,7 +46,7 @@ public class Database : IDatabase {
         if (_cachedUsers.ContainsKey(username))
             return (CreateUserEnum.AlreadyExists, null);
 
-        var user = new User(username) {Password = password};
+        var user = new User {Username = username, Password = password};
         _cachedUsers.Add(username, user);
         saveUsers();
         return (CreateUserEnum.Success, user);
@@ -71,7 +71,7 @@ public class Database : IDatabase {
         }
         
         // adding and saving post
-        var post = new Post(id, author, title, body);
+        var post = new Post{Id = id, Author = author, Title = title, Body = body};
         _cachedPosts.Add(id, post);
         savePosts();
         return (CreatePostEnum.Success, post);
