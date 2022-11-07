@@ -53,7 +53,9 @@ public class LoginLogic : ILoginLogic {
                     var cookie = _authCookie[username];
                     _authCookie.Remove(username);
                     _authUsernames.Remove(cookie);
+                    return;
                 }
+                
 
                 throw new Exception("Incorrect password");
             }
@@ -61,21 +63,10 @@ public class LoginLogic : ILoginLogic {
         }
     }
 
-    public void Logout(long cookie) {
-        if (!_authCookie.ContainsValue(cookie))
-            throw new Exception("Cookie not found");
-
-        var username = _authUsernames[cookie];
-        _authUsernames.Remove(cookie);
-        _authCookie.Remove(username);
-    }
+    
 
     public string UsernameFromCookie(long cookie) {
-        var list = _authUsernames.Keys;
-        foreach (var c in list)
-        {
-            Console.WriteLine(c);
-        }
+        
         if (!_authUsernames.ContainsKey(cookie))
             throw new Exception("Cookie not found");
 

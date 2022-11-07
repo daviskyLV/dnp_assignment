@@ -15,12 +15,7 @@ public interface ILoginLogic {
     /// <param name="username">The user's username</param>
     /// <param name="password">The user's password</param>
     void Logout(string username, string password);
-
-    /// <summary>
-    /// Log out using cookie
-    /// </summary>
-    /// <param name="cookie">The cookie of the logged in user</param>
-    void Logout(long cookie);
+    
 
     /// <summary>
     /// Get username from a user's cookie

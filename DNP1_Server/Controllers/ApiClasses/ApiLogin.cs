@@ -3,9 +3,7 @@
 namespace DNP1_Server.Controllers.ApiClasses;
 
 public class ApiLogin {
-    [JsonPropertyName("cookie")]
-    public long Cookie { get; set; }
-    
+
     [JsonPropertyName("username")]
     public string Username { get; set; }
     
