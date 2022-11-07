@@ -23,12 +23,14 @@ public class Database : IDatabase {
         // loading data into cache
         var users = JsonSerializer.Deserialize<List<User>>(_dbAccess.LoadJsonData(dbUsers));
         foreach (var u in users) {
-            _cachedUsers.Add(u.Username, u);
+            if (u.Username != null)
+                _cachedUsers.Add(u.Username, u);
         }
         
         var posts = JsonSerializer.Deserialize<List<Post>>(_dbAccess.LoadJsonData(dbPosts));
         foreach (var p in posts) {
-            _cachedPosts.Add(p.Id, p);
+            if (p.Id != null)
+                _cachedPosts.Add(p.Id, p);
         }
     }
 
