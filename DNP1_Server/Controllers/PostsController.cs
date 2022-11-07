@@ -10,15 +10,21 @@ namespace DNP1_Server.Controllers;
 public class PostsController : ControllerBase {
     [HttpPost]
     public async Task<ActionResult<Post>> CreatePost([FromBody] ApiPost post) {
-        /// TODO: Check if user is logged in
-        
-        var dbResponse = Program.Database.CreatePost(post.Author, post.Title, post.Body);
-        return dbResponse.Item1 switch {
-            CreatePostEnum.Success => dbResponse.Item2,
-            CreatePostEnum.AuthorNotFound => StatusCode(400, "Author not found"),
-            CreatePostEnum.InternalError => StatusCode(500, "Database error"),
-            _ => StatusCode(500, "Unknown server error")
-        };
+        try {
+            var author = Program.LoginLogic.UsernameFromCookie(post.AuthorCookie);
+
+            var dbResponse = Program.Database.CreatePost(author, post.Title, post.Body);
+            return dbResponse.Item1 switch {
+                CreatePostEnum.Success => dbResponse.Item2,
+                CreatePostEnum.AuthorNotFound => StatusCode(400, "Author not found"),
+                CreatePostEnum.InternalError => StatusCode(500, "Database error"),
+                _ => StatusCode(500, "Unknown server error")
+            };
+        }
+        catch (Exception e) {
+            return StatusCode(401, "Invalid cookie");
+        }
+
     }
 
     [HttpGet]

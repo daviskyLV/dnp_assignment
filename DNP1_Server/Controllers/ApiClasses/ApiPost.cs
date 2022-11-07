@@ -5,8 +5,8 @@ namespace DNP1_Server.Controllers.ApiClasses;
 
 public class ApiPost {
     [Required]
-    [JsonPropertyName("author")]
-    public string Author { get; set; }
+    [JsonPropertyName("authorCookie")]
+    public long AuthorCookie { get; set; }
     
     [Required]
     [JsonPropertyName("title")]
