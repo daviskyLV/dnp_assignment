@@ -23,7 +23,7 @@ public class LoginLogic : ILoginLogic {
                     if (!_authCookie.ContainsKey(username)) {
                         var rand = new Random();
                         long cookie = rand.NextInt64();
-                        while (_authCookie.ContainsValue(cookie)) {
+                        while (_authUsernames.ContainsKey(cookie)) {
                             cookie = rand.NextInt64();
                         }
 
@@ -71,7 +71,12 @@ public class LoginLogic : ILoginLogic {
     }
 
     public string UsernameFromCookie(long cookie) {
-        if (!_authCookie.ContainsValue(cookie))
+        var list = _authUsernames.Keys;
+        foreach (var c in list)
+        {
+            Console.WriteLine(c);
+        }
+        if (!_authUsernames.ContainsKey(cookie))
             throw new Exception("Cookie not found");
 
         return _authUsernames[cookie];

@@ -22,7 +22,7 @@ public class PostsController : ControllerBase {
             };
         }
         catch (Exception e) {
-            return StatusCode(401, "Invalid cookie");
+            return StatusCode(401, e.Message);
         }
 
     }
@@ -40,7 +40,7 @@ public class PostsController : ControllerBase {
     [HttpGet]
     [Route("{id:long}")]
     public async Task<ActionResult<Post>> GetPost([FromRoute] long id ) {
-        var dbResponse = Program.Database.GetPost(id);
+        var dbResponse = Program.Database.GetPost(""+id);
         return dbResponse.Item1 switch {
             GetPostEnum.Success => dbResponse.Item2,
             GetPostEnum.NotFound => StatusCode(404, "Post id not found"),

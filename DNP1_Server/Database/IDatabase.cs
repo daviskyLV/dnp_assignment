@@ -42,5 +42,5 @@ public interface IDatabase {
     /// </summary>
     /// <param name="id">The id of the post</param>
     /// <returns>A singular post information</returns>
-    (GetPostEnum, Post?) GetPost(long id);
+    (GetPostEnum, Post?) GetPost(string id);
 }

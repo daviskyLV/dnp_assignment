@@ -10,7 +10,7 @@ public class Database : IDatabase {
     private readonly IDataAccess _dbAccess;
 
     private Dictionary<string, User> _cachedUsers; // key is username
-    private Dictionary<long, Post> _cachedPosts; // key is id
+    private Dictionary<string, Post> _cachedPosts; // key is id
 
     public Database(string dbUsers, string dbPosts) {
         _dbUsers = dbUsers;
@@ -18,7 +18,7 @@ public class Database : IDatabase {
         _dbAccess = new DataAccess();
 
         _cachedUsers = new Dictionary<string, User>();
-        _cachedPosts = new Dictionary<long, Post>();
+        _cachedPosts = new Dictionary<string, Post>();
         
         // loading data into cache
         var users = JsonSerializer.Deserialize<List<User>>(_dbAccess.LoadJsonData(dbUsers));
@@ -68,18 +68,18 @@ public class Database : IDatabase {
         // generating random post id
         long id = 0;
         var rand = new Random();
-        while (_cachedPosts.ContainsKey(id)) {
+        while (_cachedPosts.ContainsKey(""+id)) {
             id = rand.NextInt64();
         }
         
         // adding and saving post
-        var post = new Post{Id = id, Author = author, Title = title, Body = body};
-        _cachedPosts.Add(id, post);
+        var post = new Post{Id = ""+id, Author = author, Title = title, Body = body};
+        _cachedPosts.Add(""+id, post);
         savePosts();
         return (CreatePostEnum.Success, post);
     }
 
-    public (GetPostEnum, Post?) GetPost(long id) {
+    public (GetPostEnum, Post?) GetPost(string id) {
         if (!_cachedPosts.ContainsKey(id))
             return (GetPostEnum.NotFound, null);
 
