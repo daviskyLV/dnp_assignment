@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNP1_Server", "DNP1_Server\DNP1_Server.csproj", "{8E6BF931-0AB7-4374-9B5A-EC93CAEFBF5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoard", "BlazorBoard\BlazorBoard.csproj", "{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpCllients", "HttpCllients\HttpCllients.csproj", "{748BC2EF-8759-41E9-A728-7D9195449D7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{8E6BF931-0AB7-4374-9B5A-EC93CAEFBF5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E6BF931-0AB7-4374-9B5A-EC93CAEFBF5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E6BF931-0AB7-4374-9B5A-EC93CAEFBF5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{748BC2EF-8759-41E9-A728-7D9195449D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{748BC2EF-8759-41E9-A728-7D9195449D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{748BC2EF-8759-41E9-A728-7D9195449D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{748BC2EF-8759-41E9-A728-7D9195449D7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
