@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNP1_Server", "DNP1_Server\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorBoard", "BlazorBoard\BlazorBoard.csproj", "{5B53C64D-D43B-4B6F-8F37-AF3DA4AF6AE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpCllients", "HttpCllients\HttpCllients.csproj", "{748BC2EF-8759-41E9-A728-7D9195449D7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClients", "HttpClients\HttpClients.csproj", "{748BC2EF-8759-41E9-A728-7D9195449D7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
