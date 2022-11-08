@@ -11,4 +11,8 @@
       <ProjectReference Include="..\DNP1_Server\DNP1_Server.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="ClientInterfaces\PostsService.cs" />
+    </ItemGroup>
+
 </Project>

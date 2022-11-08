@@ -9,13 +9,11 @@ namespace DNP1_Server.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase {
     [HttpPost]
-    public async Task<ActionResult<User>> CreateUser([FromBody] ApiUser user)
-    {
-
-
+    public async Task<ActionResult<User>> CreateUser([FromBody] ApiUser user) {
+        
+        
         var dbResponse = Program.Database.CreateUser(user.UserName, user.Password);
-        return dbResponse.Item1 switch
-        {
+        return dbResponse.Item1 switch {
             CreateUserEnum.Success => dbResponse.Item2,
             CreateUserEnum.AlreadyExists => StatusCode(400, "Already exists"),
             CreateUserEnum.InternalError => StatusCode(500, "Database error"),
@@ -23,10 +21,5 @@ public class UsersController : ControllerBase {
         };
     }
 
-
+    
 }
-    
-       
-    
-
-    
