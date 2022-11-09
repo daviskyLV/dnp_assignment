@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Assignment2.Data;
+using Assignment2.Data.ClientInterfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<PostsService>();
 builder.Services.AddSingleton<UsersService>();
+
+
+            
 
 var app = builder.Build();
 

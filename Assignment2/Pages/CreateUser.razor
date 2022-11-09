@@ -1,0 +1,61 @@
+﻿@page "/CreateUser"
+
+
+@using Assignment2.Data.ClientInterfaces
+@using Microsoft.AspNetCore.Components
+@using User = DNP1_Server.Utils.User
+@using Assignment2.Data
+
+@inject UsersService UserService; 
+
+
+
+<div class="card">
+    <h3>Create User</h3>
+    <div class="form-group field">
+        <label>User name:</label>
+        <input type="text" @bind="username" @bind:event="oninput"/>
+        @if (!string.IsNullOrEmpty(resultMsg))
+        {
+            <label style="color: @color">@resultMsg</label>
+        }
+    </div>
+    <div class="form-group field">
+            <label>Password:</label>
+            <input type="text" @bind="password" @bind:event="oninput"/>
+            @if (!string.IsNullOrEmpty(resultMsg))
+            {
+                <label style="color: @color">@resultMsg</label>
+            }
+        </div>
+    <div class="button-row">
+        <button @onclick="Create" disabled="@(string.IsNullOrEmpty(username))" class="acceptbtn">Register</button>
+        
+    </div>
+</div>
+@code {
+    private string username = "";
+    private string password = "";
+    private string resultMsg = "";
+    private string color = "";
+    
+    private async Task Create()
+    {
+        
+        resultMsg = "";
+
+        try
+        {
+            await UserService.Register(new Data.User(username, password));
+            username = "";
+            resultMsg = "User successfully created";
+            color = "green";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            resultMsg = e.Message;
+            color = "red";
+        }
+    }
+}
