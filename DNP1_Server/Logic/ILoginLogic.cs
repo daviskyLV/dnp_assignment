@@ -22,5 +22,5 @@ public interface ILoginLogic {
     /// </summary>
     /// <param name="cookie">The login cookie of the user</param>
     /// <returns>The username</returns>
-    string UsernameFromCookie(long cookie);
+    string UsernameFromCookie(string cookie);
 }

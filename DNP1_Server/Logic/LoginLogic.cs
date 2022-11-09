@@ -65,11 +65,11 @@ public class LoginLogic : ILoginLogic {
 
     
 
-    public string UsernameFromCookie(long cookie) {
+    public string UsernameFromCookie(string cookie) {
         
-        if (!_authUsernames.ContainsKey(cookie))
+        if (!_authUsernames.ContainsKey(long.Parse(cookie)))
             throw new Exception("Cookie not found");
 
-        return _authUsernames[cookie];
+        return _authUsernames[long.Parse(cookie)];
     }
 }
