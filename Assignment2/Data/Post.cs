@@ -2,7 +2,7 @@ namespace Assignment2.Data;
 
 public class Post {
     public string? AuthorCookie { get; }
-    public string? Author { get; }
+    public string? Author { get; set; }
     public string? Id { get; }
     public string Title { get; set; }
     public string Body { get; set; }
@@ -30,6 +30,11 @@ public class Post {
     public Post(string authorCookie, string title, string body) {
         Title = title;
         Body = body;
+        AuthorCookie = authorCookie;
+    }
+
+    public Post(string authorCookie)
+    {
         AuthorCookie = authorCookie;
     }
 }

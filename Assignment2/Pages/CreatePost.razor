@@ -1,43 +1,45 @@
 ﻿@page "/CreatePost"
+@using Assignment2.Data
+@using Assignment2.Data.ClientInterfaces
+@using Microsoft.AspNetCore.Components
+@using Post = DNP1_Server.Utils.Post
 
+@inject IPostService PostsService; 
 
-<h3>Create a new post.</h3>
-<EditForm Model="@NewPost" OnValidSubmit="@AddNewPost">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-    <div class = "form-group">Post Id:<br/>
-        <InputNumber @bind-Value="NewPost.Id"/>
+<div class="post">
+    <h3>Create a new post.</h3>
+    <div class="form-group field">
+        <label>User name:</label>
+        <input type="text" @bind="Author" @bind:event="oninput"/>
+        <input type="text" @bind="Title" @bind:event="oninput"/>
+        <input type="text" @bind="Body" @bind:event="oninput"/>
     </div>
-    <div class = "form-group">Author:<br/>
-        <InputText @bind-Value="NewPost.Author"/>
-    </div>
-    <div class = "form-group">Title:<br/>
-        <InputText @bind-Value="NewPost.Title"/>
-    </div>
-    <div class = "form-group">Body:<br/>
-        <InputText @bind-Value="NewPost.Body"/>
-    </div>
-
     <p class="actions">
-        <button class="btn btn-outline-dark" type="submit">Create</button>
+        <button class="btn btn-outline-dark" type="submit">Submit</button>
     </p>
-    
-</EditForm>
+</div>
 
 @code {
-    private string NewPost = new();
-    private string NewId = new();
-    private string NewAuthor = new();
-    private string NewTitle = new();
-    private string NewBody = new();
-
-    private void AddNewPost()
+    private string Author = "";
+    private string Title = "";
+    private string Body = "";
+    
+    private async Task Create()
     {
-        NewPost.Id = NewId;
-        NewPost.Author = NewAuthor;
-        NewPost.Title = NewAuthor;
-        NewPost.Body = NewBody;
-        PostData.AddAdultAsync(NewPost);
-        NavigationManager.NavigateTo("/AdultsView", true);
+        Title = "";
+
+        try
+        {
+            await PostsService.CreatePost(new Data.Post(Author));
+            Author = "";
+            Title = "";
+            Body = "";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Title = e.Message;
+            Body = e.Message;
+        }
     }
 }
