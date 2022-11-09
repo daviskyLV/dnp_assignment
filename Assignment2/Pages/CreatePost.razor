@@ -1,0 +1,43 @@
+﻿@page "/CreatePost"
+
+
+<h3>Create a new post.</h3>
+<EditForm Model="@NewPost" OnValidSubmit="@AddNewPost">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class = "form-group">Post Id:<br/>
+        <InputNumber @bind-Value="NewPost.Id"/>
+    </div>
+    <div class = "form-group">Author:<br/>
+        <InputText @bind-Value="NewPost.Author"/>
+    </div>
+    <div class = "form-group">Title:<br/>
+        <InputText @bind-Value="NewPost.Title"/>
+    </div>
+    <div class = "form-group">Body:<br/>
+        <InputText @bind-Value="NewPost.Body"/>
+    </div>
+
+    <p class="actions">
+        <button class="btn btn-outline-dark" type="submit">Create</button>
+    </p>
+    
+</EditForm>
+
+@code {
+    private string NewPost = new();
+    private string NewId = new();
+    private string NewAuthor = new();
+    private string NewTitle = new();
+    private string NewBody = new();
+
+    private void AddNewPost()
+    {
+        NewPost.Id = NewId;
+        NewPost.Author = NewAuthor;
+        NewPost.Title = NewAuthor;
+        NewPost.Body = NewBody;
+        PostData.AddAdultAsync(NewPost);
+        NavigationManager.NavigateTo("/AdultsView", true);
+    }
+}
