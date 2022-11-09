@@ -1,5 +1,6 @@
 ﻿@page "/counter"
 @using Assignment2.Data
+@inject PostsService PostsServ
 
 <PageTitle>Counter</PageTitle>
 
@@ -16,7 +17,7 @@
         currentCount++;
         
         // testing stuff
-        //var fetchResult = await Testing.FetchThing();
+        //var fetchResult = await PostsServ.GetAllPosts();
         //Console.WriteLine("Testing returned result: "+fetchResult);
     }
 }
