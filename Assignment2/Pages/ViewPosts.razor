@@ -1,6 +1,9 @@
 ﻿@page "/ViewPosts"
 @using Assignment2.Data
 @using Post = DNP1_Server.Utils.Post
+
+@inject PostsService PostsService; 
+
 <h3>ViewPosts</h3>
 <div>
     <button @onclick="LoadPosts">Load</button>
@@ -41,7 +44,7 @@ else
 }
 
 @code {
-    private IEnumerable<Post>? posts;
+    private List<Data.Post> posts;
     private string msg = "";
 
     private async Task LoadPosts()

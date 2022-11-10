@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Components
 @using Post = DNP1_Server.Utils.Post
 
-@inject PostsService PostService; 
+@inject PostsService PostsService; 
 
 <div class="post">
     <h3>Create a new post.</h3>
@@ -42,7 +42,7 @@
 
         try
         {
-            await PostService.CreatePost(new Data.Post(authorCookie, title, body));
+            await PostsService.CreatePost(new Data.Post(authorCookie, title, body));
             authorCookie = "";
             resultMsg = "User successfully created";
             color = "green";
