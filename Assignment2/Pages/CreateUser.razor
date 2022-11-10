@@ -3,10 +3,9 @@
 
 
 @using Microsoft.AspNetCore.Components
-@using User = DNP1_Server.Utils.User
-@using Assignment2.Data
+@using Assignment2.Data.ClientInterfaces
 
-@inject UsersService UserService; 
+@inject IUsersService UserService; 
 
 
 
@@ -48,6 +47,7 @@
         {
             await UserService.Register(new Data.User(username, password));
             username = "";
+            password = "";
             resultMsg = "User successfully created";
             color = "green";
         }

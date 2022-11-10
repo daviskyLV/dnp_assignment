@@ -1,7 +1,9 @@
+using Assignment2.Authentification;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Assignment2.Data;
 using Assignment2.Data.ClientInterfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +12,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<PostsService>();
-builder.Services.AddSingleton<UsersService>();
+//builder.Services.AddSingleton<UsersService>();
 
+builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthentificationStateProvider>();
+builder.Services.AddScoped<IAuthManager, AuthManagerImpl>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
             
 

@@ -1,35 +1,42 @@
 ﻿@page "/LogoutUser"
 
 @using Microsoft.AspNetCore.Components
-@using User = DNP1_Server.Utils.User
-@using Assignment2.Data
+@using Assignment2.Authentification
+@inject IAuthManager _authManager;
+
 <h3>Logout User</h3>
-
-
-@inject UsersService UserService; 
-<div class="card">
-    <h3>Logout</h3>
-    <div class="form-group field">
-        <label>User name:</label>
-        <input type="text" @bind="username" @bind:event="oninput"/>
-        @if (!string.IsNullOrEmpty(resultMsg))
-        {
-            <label style="color: @color">@resultMsg</label>
-        }
-    </div>
-    <div class="form-group field">
-        <label>Password:</label>
-        <input type="text" @bind="password" @bind:event="oninput"/>
-        @if (!string.IsNullOrEmpty(resultMsg))
-        {
-            <label style="color: @color">@resultMsg</label>
-        }
-    </div>
-    <div class="button-row">
-        <button @onclick="Create" disabled="@(string.IsNullOrEmpty(username))" class="acceptbtn">Logout</button>
-        
-    </div>
-</div>
+<AuthorizeView>
+    <NotAuthorized>
+        <p>
+            You haven't logged in yet!<br/>
+            Would you like to <a href="../LoginUser">log in</a>?
+        </p>
+    </NotAuthorized>
+    <Authorized>
+        <div class="card">
+            <div class="form-group field">
+                <label>User name:</label>
+                <input type="text" @bind="username" @bind:event="oninput"/>
+                @if (!string.IsNullOrEmpty(resultMsg))
+                {
+                    <label style="color: @color">@resultMsg</label>
+                }
+            </div>
+            <div class="form-group field">
+                <label>Password:</label>
+                <input type="text" @bind="password" @bind:event="oninput"/>
+                @if (!string.IsNullOrEmpty(resultMsg))
+                {
+                    <label style="color: @color">@resultMsg</label>
+                }
+            </div>
+            <div class="button-row">
+                <button @onclick="Logout" disabled="@(string.IsNullOrEmpty(username))" class="acceptbtn">Logout</button>
+                
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private string username = "";
@@ -37,13 +44,13 @@
     private string resultMsg = "";
     private string color = "";
     
-    private async Task Create()
+    private async Task Logout()
     {
         resultMsg = "";
 
         try
         {
-            await UserService.Logout(new Data.User(username, password));
+            await _authManager.LogoutAsync(username, password);
             username = "";
             resultMsg = "User successfully logged out";
             color = "green";

@@ -1,9 +1,10 @@
 using System.Text;
 using System.Text.Json;
+using Assignment2.Data.ClientInterfaces;
 
 namespace Assignment2.Data; 
 
-public class UsersService {
+public class UsersService : IUsersService {
     private readonly HttpClientHandler _handler;
     private const string BasePath = "https://localhost:7173";
 
