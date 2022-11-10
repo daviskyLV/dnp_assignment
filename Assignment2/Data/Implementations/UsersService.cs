@@ -50,8 +50,8 @@ public class UsersService : IUsersService {
         using HttpClient client = new HttpClient(_handler);
         string userAsJson = JsonSerializer.Serialize(submittedUser);
         var requestContent = new StringContent(userAsJson, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync(BasePath+"/Logout", requestContent);
-        
+        var response = await client.PostAsync(BasePath + "/Logout", requestContent);
+
         // handling error responses
         if (!response.IsSuccessStatusCode) {
             Console.WriteLine("Error while logging out user!");

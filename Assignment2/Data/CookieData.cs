@@ -7,9 +7,5 @@ public class CookieData {
     /// <summary>
     /// The cookie used for various requests after logging in
     /// </summary>
-    public string LoginCookie { get; set; }
-
-    public CookieData(string login) {
-        LoginCookie = login;
-    }
+    public string LoginCookie { get; set; } = null!;
 }

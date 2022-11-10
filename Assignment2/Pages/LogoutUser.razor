@@ -31,7 +31,7 @@
                 }
             </div>
             <div class="button-row">
-                <button @onclick="Logout" disabled="@(string.IsNullOrEmpty(username))" class="acceptbtn">Logout</button>
+                <button @onclick="Logout" disabled="@(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))" class="acceptbtn">Logout</button>
                 
             </div>
         </div>
@@ -52,6 +52,7 @@
         {
             await _authManager.LogoutAsync(username, password);
             username = "";
+            password = "";
             resultMsg = "User successfully logged out";
             color = "green";
         }

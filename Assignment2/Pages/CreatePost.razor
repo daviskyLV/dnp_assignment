@@ -2,35 +2,45 @@
 @using Assignment2.Data
 @using Assignment2.Data.ClientInterfaces
 @using Microsoft.AspNetCore.Components
-@using Post = DNP1_Server.Utils.Post
+@using Assignment2.Authentification
 
-@inject PostsService PostsService; 
+@inject IPostService _postService; 
+@inject IAuthManager _authManager;
 
-<div class="post">
-    <h3>Create a new post.</h3>
-    <div>
-        <label>Title:</label>
-        <input type="text" @bind="title" @bind:event="oninput"/>
-        @if (!string.IsNullOrEmpty(resultMsg))
-                {
-                    <label style="color: @color">@resultMsg</label>
-                }
-    </div> 
-    <div>
-        <label>Body: </label>
-        <input type="text" @bind="body" @bind:event="oninput"/>
-        @if (!string.IsNullOrEmpty(resultMsg))
-                {
-                    <label style="color: @color">@resultMsg</label>
-                }
-    </div>
-    <div class="button-row">
-            <button @onclick="Create" disabled="@(string.IsNullOrEmpty(body))" class="submit">Submit</button>
-    </div>
-</div>
+<h3>Create a new post</h3>
+<AuthorizeView>
+    <NotAuthorized>
+        <p>
+            You need to be logged in to create a post!<br/>
+            Would you like to <a href="../LoginUser">log in</a>?
+        </p>
+    </NotAuthorized>
+    <Authorized>
+        <div class="post">
+            <div>
+                <label>Title:</label>
+                <input type="text" @bind="title" @bind:event="oninput"/>
+                @if (!string.IsNullOrEmpty(resultMsg))
+                        {
+                            <label style="color: @color">@resultMsg</label>
+                        }
+            </div> 
+            <div>
+                <label>Body: </label>
+                <input type="text" @bind="body" @bind:event="oninput"/>
+                @if (!string.IsNullOrEmpty(resultMsg))
+                        {
+                            <label style="color: @color">@resultMsg</label>
+                        }
+            </div>
+            <div class="button-row">
+                    <button @onclick="Create" disabled="@(string.IsNullOrEmpty(body) || string.IsNullOrEmpty(title))" class="submit">Submit</button>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
-    private string authorCookie = "";
     private string title = "";
     private string body = "";
     private string resultMsg = "";
@@ -39,11 +49,19 @@
     private async Task Create()
     {
         resultMsg = "";
+        string cookie = "";
 
-        try
-        {
-            await PostsService.CreatePost(new Data.Post(authorCookie, title, body));
-            resultMsg = "User successfully created";
+        try {
+            var perms = await _authManager.GetAuthAsync();
+            foreach (var c in perms.Claims) {
+                if (c.Type == "login") {
+                    cookie = c.Value;
+                    break;
+                }
+            }
+            
+            await _postService.CreatePost(new Post { AuthorCookie = cookie, Title = title, Body = body});
+            resultMsg = "Post successfully created";
             color = "green";
         }
         catch (Exception e)

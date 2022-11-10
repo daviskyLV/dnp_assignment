@@ -21,7 +21,7 @@ public class AuthManagerImpl : IAuthManager {
         
         var savedCookies = await GetCookieDataFromCacheAsync(); // getting saved cookies
         if (savedCookies == null)
-            savedCookies = new CookieData(loginCookie);
+            savedCookies = new CookieData{LoginCookie = loginCookie};
 
         savedCookies.LoginCookie = loginCookie; // updating login cookie with the new cookie
         await CacheCookieDataAsync(savedCookies);
@@ -35,7 +35,7 @@ public class AuthManagerImpl : IAuthManager {
         
         var savedCookies = await GetCookieDataFromCacheAsync(); // getting saved cookies
         if (savedCookies == null)
-            savedCookies = new CookieData("");
+            savedCookies = new CookieData{LoginCookie = ""};
 
         savedCookies.LoginCookie = ""; // updating login cookie with the empty one
         await CacheCookieDataAsync(savedCookies);

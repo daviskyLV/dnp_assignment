@@ -32,7 +32,7 @@
                 }
             </div>
             <div class="button-row">
-                <button @onclick="Login" disabled="@(string.IsNullOrEmpty(username))" class="acceptbtn">Login</button>
+                <button @onclick="Login" disabled="@(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))" class="acceptbtn">Login</button>
             </div>
         </div>
     </NotAuthorized>
@@ -52,6 +52,7 @@
         {
             await _authManager.LoginAsync(username, password);
             username = "";
+            password = "";
             resultMsg = "User successfully logged in";
             color = "green";
         }
