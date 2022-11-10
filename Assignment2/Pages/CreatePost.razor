@@ -8,38 +8,50 @@
 
 <div class="post">
     <h3>Create a new post.</h3>
-    <div class="form-group field">
-        <label>User name:</label>
-        <input type="text" @bind="Author" @bind:event="oninput"/>
-        <input type="text" @bind="Title" @bind:event="oninput"/>
-        <input type="text" @bind="Body" @bind:event="oninput"/>
+    <div>
+        <label>Title:</label>
+        <input type="text" @bind="title" @bind:event="oninput"/>
+        @if (!string.IsNullOrEmpty(resultMsg))
+                {
+                    <label style="color: @color">@resultMsg</label>
+                }
+    </div> 
+    <div>
+        <label>Body: </label>
+        <input type="text" @bind="body" @bind:event="oninput"/>
+        @if (!string.IsNullOrEmpty(resultMsg))
+                {
+                    <label style="color: @color">@resultMsg</label>
+                }
     </div>
-    <p class="actions">
-        <button class="btn btn-outline-dark" type="submit">Submit</button>
-    </p>
+    <div class="button-row">
+            <button @onclick="Create" disabled="@(string.IsNullOrEmpty(body))" class="submit">Submit</button>
+    </div>
 </div>
 
 @code {
-    private string Author = "";
-    private string Title = "";
-    private string Body = "";
+    private string authorCookie = "";
+    private string title = "";
+    private string body = "";
+    private string resultMsg = "";
+    private string color = "";
     
     private async Task Create()
     {
-        Title = "";
+        resultMsg = "";
 
         try
         {
-            await PostService.CreatePost(new Data.Post(Author));
-            Author = "";
-            Title = "";
-            Body = "";
+            await PostService.CreatePost(new Data.Post(authorCookie, title, body));
+            authorCookie = "";
+            resultMsg = "User successfully created";
+            color = "green";
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            Title = e.Message;
-            Body = e.Message;
+            resultMsg = e.Message;
+            color = "red";
         }
     }
 }

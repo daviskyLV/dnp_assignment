@@ -2,36 +2,38 @@ using System.Text;
 using System.Text.Json;
 using Assignment2.Data.ClientInterfaces;
 
-namespace Assignment2.Data; 
+namespace Assignment2.Data;
 
-public class PostsService : IPostService {
+public class PostsService : IPostService
+{
     private readonly HttpClientHandler _handler;
     private const string BasePath = "https://localhost:7173/Posts";
 
-    public PostsService() {
+    public PostsService()
+    {
         // Trusting all certificates
         //https://stackoverflow.com/a/46626858
         _handler = new HttpClientHandler();
         _handler.ClientCertificateOptions = ClientCertificateOption.Manual;
         _handler.ServerCertificateCustomValidationCallback =
-            (httpRequestMessage, cert, cetChain, policyErrors) => {
-                return true; 
-            };
+            (httpRequestMessage, cert, cetChain, policyErrors) => { return true; };
     }
 
-    public async Task<Post> CreatePost(Post submittedPost) {
+    public async Task<Post> CreatePost(Post submittedPost)
+    {
         // executing request
         using HttpClient client = new HttpClient(_handler);
         string postAsJson = JsonSerializer.Serialize(submittedPost);
         var requestContent = new StringContent(postAsJson, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(BasePath, requestContent);
-        
+
         // handling error responses
-        if (!response.IsSuccessStatusCode) {
+        if (!response.IsSuccessStatusCode)
+        {
             Console.WriteLine("Error while creating a post!");
-            Console.WriteLine("JSON request: "+postAsJson);
-            Console.WriteLine("Error code: "+response.StatusCode);
-            Console.WriteLine("Error message: "+ await response.Content.ReadAsStringAsync());
+            Console.WriteLine("JSON request: " + postAsJson);
+            Console.WriteLine("Error code: " + response.StatusCode);
+            Console.WriteLine("Error message: " + await response.Content.ReadAsStringAsync());
             throw new Exception($@"Failed to create a post! Error: {await response.Content.ReadAsStringAsync()}");
         }
 
@@ -41,19 +43,21 @@ public class PostsService : IPostService {
 
         if (returnedPost == null)
             throw new JsonException("Couldn't parse returned post!");
-        
+
         return returnedPost;
     }
 
-    public async Task<List<Post>> GetAllPosts() {
+    public async Task<List<Post>> GetAllPosts()
+    {
         using HttpClient client = new HttpClient(_handler);
         var response = await client.GetAsync(BasePath);
-        
+
         // handling error responses
-        if (!response.IsSuccessStatusCode) {
+        if (!response.IsSuccessStatusCode)
+        {
             Console.WriteLine("Error while getting all posts!");
-            Console.WriteLine("Error code: "+response.StatusCode);
-            Console.WriteLine("Error message: "+ await response.Content.ReadAsStringAsync());
+            Console.WriteLine("Error code: " + response.StatusCode);
+            Console.WriteLine("Error message: " + await response.Content.ReadAsStringAsync());
             throw new Exception($@"Failed to get all posts! Error: {await response.Content.ReadAsStringAsync()}");
         }
 
@@ -66,17 +70,20 @@ public class PostsService : IPostService {
 
         return returnedPosts;
     }
-    
-    public async Task<Post> GetPost(long id) {
+
+    public async Task<Post> GetPost(long id)
+    {
         using HttpClient client = new HttpClient(_handler);
-        var response = await client.GetAsync(BasePath+$@"/{id}");
-        
+        var response = await client.GetAsync(BasePath + $@"/{id}");
+
         // handling error responses
-        if (!response.IsSuccessStatusCode) {
+        if (!response.IsSuccessStatusCode)
+        {
             Console.WriteLine($@"Error while getting post with id {id}!");
-            Console.WriteLine("Error code: "+response.StatusCode);
-            Console.WriteLine("Error message: "+ await response.Content.ReadAsStringAsync());
-            throw new Exception($@"Failed to get post with id {id}! Error: {await response.Content.ReadAsStringAsync()}");
+            Console.WriteLine("Error code: " + response.StatusCode);
+            Console.WriteLine("Error message: " + await response.Content.ReadAsStringAsync());
+            throw new Exception(
+                $@"Failed to get post with id {id}! Error: {await response.Content.ReadAsStringAsync()}");
         }
 
         // handling successful responses
@@ -88,4 +95,6 @@ public class PostsService : IPostService {
 
         return returnedPost;
     }
+
+   
 }
