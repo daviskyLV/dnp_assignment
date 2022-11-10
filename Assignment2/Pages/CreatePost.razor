@@ -43,7 +43,6 @@
         try
         {
             await PostsService.CreatePost(new Data.Post(authorCookie, title, body));
-            authorCookie = "";
             resultMsg = "User successfully created";
             color = "green";
         }

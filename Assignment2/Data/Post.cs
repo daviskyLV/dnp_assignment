@@ -33,8 +33,5 @@ public class Post {
         AuthorCookie = authorCookie;
     }
 
-    public Post(string authorCookie)
-    {
-        AuthorCookie = authorCookie;
-    }
+
 }
