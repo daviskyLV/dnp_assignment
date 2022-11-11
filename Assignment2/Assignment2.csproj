@@ -10,4 +10,10 @@
       <ProjectReference Include="..\DNP1_Server\DNP1_Server.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
 </Project>
