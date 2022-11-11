@@ -42,9 +42,9 @@ public class AuthManagerImpl : IAuthManager {
         
         ClaimsPrincipal principal = CreateClaimsPrincipal(savedCookies); // convert saved cookies object to ClaimsPrincipal
         OnAuthStateChanged?.Invoke(principal); // notify interested classes in the change of authentication state
-        //await ClearCookieDataFromCacheAsync(); // remove the cookie data object from browser cache
+        await ClearCookieDataFromCacheAsync().ConfigureAwait(false); // remove the cookie data object from browser cache
         //ClaimsPrincipal principal = CreateClaimsPrincipal(null); // create a new ClaimsPrincipal with nothing.
-        //OnAuthStateChanged?.Invoke(principal); // notify about change in authentication state
+        OnAuthStateChanged?.Invoke(principal); // notify about change in authentication state
     }
 
     public async Task CacheCookieDataAsync(CookieData cookieData) {
