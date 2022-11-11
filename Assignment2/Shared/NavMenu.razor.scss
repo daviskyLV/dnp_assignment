@@ -17,12 +17,14 @@
 .nav-item {
   font-size: 1rem;
   padding-bottom: 0.7rem;
-}
-.nav-item:first-of-type {
-  padding-top: 1rem;
-}
-.nav-item:last-of-type {
-  padding-bottom: 1rem;
+
+  &:first-of-type {
+    padding-top: 1rem;
+  }
+
+  &:last-of-type {
+    padding-bottom: 1rem;
+  }
 }
 
 a.nav-link {
@@ -32,14 +34,14 @@ a.nav-link {
   display: flex;
   align-items: center;
   line-height: 3rem;
-}
-a.nav-link .active {
-  background-color: rgba(255, 255, 255, 0.25);
-  color: white;
-}
-a.nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
 
-/*# sourceMappingURL=NavMenu.razor.css.map */
+  .active {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+}

@@ -1,0 +1,41 @@
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background: #1a1a2f;
+}
+
+main {
+    flex: 1;
+}
+
+.sidebar {
+    background-image: linear-gradient(180deg, #1a1f2f 60%, #f58c40);
+    width: 25vw;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+.top-row {
+    background-color: #10131C;
+    border-bottom: 1px solid #121212;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    
+    a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 1rem;
+    }
+    
+    &, article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
