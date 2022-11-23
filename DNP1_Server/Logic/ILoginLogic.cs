@@ -7,14 +7,14 @@ public interface ILoginLogic {
     /// <param name="username">The username of the user</param>
     /// <param name="password">The password of the user</param>
     /// <returns>Login cookie to use for other operations</returns>
-    long Login(string username, string password);
+    Task<string> Login(string username, string password);
 
     /// <summary>
     /// Log out using username and password
     /// </summary>
     /// <param name="username">The user's username</param>
     /// <param name="password">The user's password</param>
-    void Logout(string username, string password);
+    Task Logout(string username, string password);
     
 
     /// <summary>

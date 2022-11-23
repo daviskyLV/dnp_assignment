@@ -1,75 +1,54 @@
-using DNP1_Server.Database.Enums;
+using DNP1_Server.Exceptions;
 
 namespace DNP1_Server.Logic;
 
 public class LoginLogic : ILoginLogic {
-    private readonly Dictionary<string, long> _authCookie; // key is username
-    private readonly Dictionary<long, string> _authUsernames; // key is cookie corresponding to username
+    private readonly Dictionary<string, string> _authCookie; // key is username
+    private readonly Dictionary<string, string> _authUsernames; // key is cookie corresponding to username
 
     public LoginLogic() {
-        _authCookie = new Dictionary<string, long>();
-        _authUsernames = new Dictionary<long, string>();
+        _authCookie = new Dictionary<string, string>();
+        _authUsernames = new Dictionary<string, string>();
     }
 
-    public long Login(string username, string password) {
-        var dbResponse = Program.Database.GetUserInfo(username);
+    public async Task<string> Login(string username, string password) {
+        var response = await Program.Database.GetUserInfoAsync(username);
 
-        switch (dbResponse.Item1) {
-            case GetUserEnum.NotFound: {
-                throw new Exception("Username not found");
-            }
-            case GetUserEnum.Success: {
-                if (dbResponse.Item2.Password == password) {
-                    if (!_authCookie.ContainsKey(username)) {
-                        var rand = new Random();
-                        long cookie = rand.NextInt64();
-                        while (_authUsernames.ContainsKey(cookie)) {
-                            cookie = rand.NextInt64();
-                        }
+        if (response.Password != password)
+            throw new DataMismatchException("Incorrect password!");
 
-                        _authCookie.Add(username, cookie);
-                        _authUsernames.Add(cookie, username);
-                        return cookie;
-                    }
-
-                    return _authCookie[username];
-                }
-
-                throw new Exception("Incorrect password");
-            }
-            default: throw new Exception("Internal error");
+        if (_authCookie.ContainsKey(username))
+            return _authCookie[username];
+        
+        // generating new cookie
+        var rand = new Random();
+        string cookie = rand.NextInt64()+"";
+        while (_authUsernames.ContainsKey(cookie)) {
+            cookie = rand.NextInt64()+"";
         }
+
+        _authCookie.Add(username, cookie);
+        _authUsernames.Add(cookie, username);
+        return ""+cookie;
     }
 
-    public void Logout(string username, string password) {
-        var dbResponse = Program.Database.GetUserInfo(username);
-
-        switch (dbResponse.Item1) {
-            case GetUserEnum.NotFound: {
-                throw new Exception("Username not found");
-            }
-            case GetUserEnum.Success: {
-                if (dbResponse.Item2.Password == password) {
-                    var cookie = _authCookie[username];
-                    _authCookie.Remove(username);
-                    _authUsernames.Remove(cookie);
-                    return;
-                }
-                
-
-                throw new Exception("Incorrect password");
-            }
-            default: throw new Exception("Internal error");
-        }
+    public async Task Logout(string username, string password) {
+        var response = await Program.Database.GetUserInfoAsync(username);
+        
+        if (response.Password != password)
+            throw new DataMismatchException("Incorrect password!");
+        
+        var cookie = _authCookie[username];
+        _authCookie.Remove(username);
+        _authUsernames.Remove(cookie);
     }
 
     
 
     public string UsernameFromCookie(string cookie) {
-        
-        if (!_authUsernames.ContainsKey(long.Parse(cookie)))
-            throw new Exception("Cookie not found");
+        if (!_authUsernames.ContainsKey(cookie))
+            throw new NotFoundException("Cookie not found!");
 
-        return _authUsernames[long.Parse(cookie)];
+        return _authUsernames[cookie];
     }
 }

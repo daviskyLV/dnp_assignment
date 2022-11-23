@@ -9,17 +9,17 @@ public class LogoutController : ControllerBase
 {
     
     [HttpPost]
-    public async Task<ActionResult<string>> Logout([FromBody] ApiLogin login)
+    public async Task<ActionResult<string>> Logout([FromBody] ApiUser login)
     {
         
-        Console.WriteLine(login.Username);
+        Console.WriteLine(login.UserName);
         Console.WriteLine(login.Password);
         try
         {
             
-            if (login.Username != null && login.Password != null)
+            if (login.UserName != null && login.Password != null)
             {
-                Program.LoginLogic.Logout(login.Username, login.Password);
+                Program.LoginLogic.Logout(login.UserName, login.Password);
             }
 
             return Ok("user has been logged out");

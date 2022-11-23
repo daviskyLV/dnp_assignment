@@ -1,7 +1,5 @@
 ﻿using DNP1_Server.Controllers.ApiClasses;
-using DNP1_Server.Database.Enums;
-using DNP1_Server.Logic;
-using DNP1_Server.Utils;
+using DNP1_Server.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DNP1_Server.Controllers;
@@ -10,20 +8,21 @@ namespace DNP1_Server.Controllers;
 public class LoginController : ControllerBase
 {   
     [HttpPost]
-    public async Task<ActionResult<string>> Login([FromBody] ApiLogin login)
+    public async Task<ActionResult<string>> Login([FromBody] ApiUser login)
     {
-        try
-        {
-            if (login.Username == null && login.Password == null)
+        try {
+            if (login.UserName == null && login.Password == null)
                 return StatusCode(400, "username or password not provided");
 
-            var cookie = Program.LoginLogic.Login(login.Username, login.Password);
+            var cookie = Program.LoginLogic.Login(login.UserName, login.Password);
 
-            return ""+cookie;
-        }
-        catch (Exception e)
-        {
-            return StatusCode(401, "something went wrong");
+            return "" + cookie;
+        } catch (NotFoundException e) {
+            return StatusCode(404, e.Message);
+        } catch (DataMismatchException e) {
+            return StatusCode(400, e.Message);
+        } catch (Exception e) {
+            return StatusCode(500, e.Message);
         }
     }
 }

@@ -8,7 +8,7 @@ public class Program {
     
     public static void Main(string[] args) {
         // Setup
-        Database = new Database.Database("users.json","posts.json");
+        Database = new Database.Database();
         LoginLogic = new LoginLogic();
 
         // Template code
@@ -20,6 +20,7 @@ public class Program {
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddDbContext<WebApiContext>();
 
         var app = builder.Build();
 

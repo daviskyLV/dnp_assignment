@@ -1,5 +1,5 @@
 using DNP1_Server.Controllers.ApiClasses;
-using DNP1_Server.Database.Enums;
+using DNP1_Server.Exceptions;
 using DNP1_Server.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,19 +11,17 @@ public class UsersController : ControllerBase {
     [HttpPost]
     public async Task<ActionResult<User>> CreateUser([FromBody] ApiUser user)
     {
-
-
-        var dbResponse = Program.Database.CreateUser(user.UserName, user.Password);
-        return dbResponse.Item1 switch
-        {
-            CreateUserEnum.Success => dbResponse.Item2,
-            CreateUserEnum.AlreadyExists => StatusCode(400, "Already exists"),
-            CreateUserEnum.InternalError => StatusCode(500, "Database error"),
-            _ => StatusCode(500, "Unknown server error")
-        };
+        try {
+            var dbResponse = await Program.Database.CreateUserAsync(
+                new User(user.UserName, user.Password)
+            );
+            return dbResponse;
+        } catch (DuplicateDataException e) {
+            return StatusCode(400, e.Message);
+        } catch (Exception e) {
+            return StatusCode(500, e.Message);
+        }
     }
-
-
 }
     
        

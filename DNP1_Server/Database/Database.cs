@@ -1,92 +1,78 @@
-using System.Text.Json;
-using DNP1_Server.Database.Enums;
+using DNP1_Server.Exceptions;
 using DNP1_Server.Utils;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DNP1_Server.Database; 
 
-public class Database : IDatabase {
-    private readonly string _dbUsers;
-    private readonly string _dbPosts;
-    private readonly IDataAccess _dbAccess;
+public class Database : IDatabase { 
+    public Database() { }
 
-    private Dictionary<string, User> _cachedUsers; // key is username
-    private Dictionary<string, Post> _cachedPosts; // key is id
-
-    public Database(string dbUsers, string dbPosts) {
-        _dbUsers = dbUsers;
-        _dbPosts = dbPosts;
-        _dbAccess = new DataAccess();
-
-        _cachedUsers = new Dictionary<string, User>();
-        _cachedPosts = new Dictionary<string, Post>();
+    public async Task<User> CreateUserAsync(User user) {
+        await using WebApiContext context = new WebApiContext();
         
-        // loading data into cache
-        var users = JsonSerializer.Deserialize<List<User>>(_dbAccess.LoadJsonData(dbUsers));
-        foreach (var u in users) {
-            if (u.Username != null)
-                _cachedUsers.Add(u.Username, u);
-        }
+        if (context.Users.Find(user.Username) != null)
+            throw new DuplicateDataException("User already exists!");
         
-        var posts = JsonSerializer.Deserialize<List<Post>>(_dbAccess.LoadJsonData(dbPosts));
-        foreach (var p in posts) {
-            if (p.Id != null)
-                _cachedPosts.Add(p.Id, p);
-        }
+        EntityEntry<User> entityAdded = await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+        return entityAdded.Entity;
     }
 
-    private void saveUsers() {
-        var json = JsonSerializer.Serialize(_cachedUsers.Values);
-        _dbAccess.SaveData(_dbUsers, json);
-    }
-    
-    private void savePosts() {
-        var json = JsonSerializer.Serialize(_cachedPosts.Values);
-        _dbAccess.SaveData(_dbPosts, json);
-    }
+    public async Task<User> GetUserInfoAsync(string username) {
+        await using WebApiContext context = new WebApiContext();
 
-    public (CreateUserEnum, User?) CreateUser(string username, string password) {
-        if (_cachedUsers.ContainsKey(username))
-            return (CreateUserEnum.AlreadyExists, null);
-
-        var user = new User {Username = username, Password = password};
-        _cachedUsers.Add(username, user);
-        saveUsers();
-        return (CreateUserEnum.Success, user);
+        User? userObj = context.Users.Find(username);
+        if (userObj == null)
+            throw new NotFoundException("User not found");
+        
+        return userObj;
     }
 
-    public (GetUserEnum, User?) GetUserInfo(string username) {
-        if (!_cachedUsers.ContainsKey(username))
-            return (GetUserEnum.NotFound, null);
+    public async Task<Post> CreatePostAsync(string author, string title, string body) {
+        await using WebApiContext context = new WebApiContext();
 
-        return (GetUserEnum.Success, _cachedUsers[username]);
-    }
-
-    public (CreatePostEnum, Post?) CreatePost(string author, string title, string body) {
-        if (!_cachedUsers.ContainsKey(author))
-            return (CreatePostEnum.AuthorNotFound, null);
+        User? authorObj = context.Users.Find(author);
+        if (authorObj == null)
+            throw new NotFoundException("Author not found!");
 
         // generating random post id
-        long id = 0;
-        var rand = new Random();
-        while (_cachedPosts.ContainsKey(""+id)) {
-            id = rand.NextInt64();
+        Random rand = new Random();
+        string postId = ""+rand.NextInt64();
+        while (context.Posts.Find(postId) != null) {
+            postId = ""+rand.NextInt64();
         }
+
+        DbPost newPost = new DbPost(postId, authorObj, title, body);
+        EntityEntry<DbPost> entityAdded = await context.Posts.AddAsync(newPost);
+        await context.SaveChangesAsync();
         
-        // adding and saving post
-        var post = new Post{Id = ""+id, Author = author, Title = title, Body = body};
-        _cachedPosts.Add(""+id, post);
-        savePosts();
-        return (CreatePostEnum.Success, post);
+        var entity = entityAdded.Entity;
+        return new Post{Title = entity.Title, Body = entity.Body, Id = entity.Id, Author = entity.Author.Username};
     }
 
-    public (GetPostEnum, Post?) GetPost(string id) {
-        if (!_cachedPosts.ContainsKey(id))
-            return (GetPostEnum.NotFound, null);
-
-        return (GetPostEnum.Success, _cachedPosts[id]);
+    public async Task<Post> GetPostAsync(string id) {
+        await using WebApiContext context = new WebApiContext();
+        
+        DbPost? postObj = context.Posts.Find(id);
+        if (postObj == null)
+            throw new NotFoundException("Post id not found!");
+        
+        return new Post{Title = postObj.Title, Body = postObj.Body, Id = postObj.Id, Author = postObj.Author.Username};
     }
 
-    public (GetPostEnum, List<Post>?) GetAllPosts() {
-        return (GetPostEnum.Success, new List<Post>(_cachedPosts.Values));
+    public async Task<List<Post>> GetAllPostsAsync() {
+        await using WebApiContext context = new WebApiContext();
+        var postsEnumerable = context.Posts.GetAsyncEnumerator();
+        var posts = new List<Post>();
+
+        var cur = postsEnumerable.Current;
+        // i assume first post is always there?
+        posts.Add(new Post{Title = cur.Title, Body = cur.Body, Id = cur.Id, Author = cur.Author.Username});
+        while (await postsEnumerable.MoveNextAsync()) {
+            cur = postsEnumerable.Current;
+            posts.Add(new Post{Title = cur.Title, Body = cur.Body, Id = cur.Id, Author = cur.Author.Username});
+        }
+
+        return posts;
     }
 }
